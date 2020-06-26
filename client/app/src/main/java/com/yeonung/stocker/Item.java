@@ -1,10 +1,17 @@
 package com.yeonung.stocker;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Item {
+    @SerializedName("_id")
     String _id;
+    @SerializedName("id")
     int id;
+    @SerializedName("name")
     String name;
+    @SerializedName("price")
     int price;
+    @SerializedName("count")
     int count;
 
     public String get_id() {

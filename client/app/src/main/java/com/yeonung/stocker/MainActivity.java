@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.JsonObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextName;
     EditText editTextPrice;
     EditText editTextCount;
-    MyAPI myAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +28,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Initialize Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:8000")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        myAPI = retrofit.create(MyAPI.class);
+        final Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+        final RetrofitService service = retrofit.create(RetrofitService.class);
 
         // EditTexts
         editTextId = (EditText)findViewById(R.id.editTextId);
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = Integer.parseInt(((EditText)findViewById(R.id.editTextSearch)).getText().toString());
                 Log.d("button", Integer.toString(id));
 
-                Call<Item> itemCall = myAPI.get(id);
+                Call<Item> itemCall = service.getItem(id);
                 itemCall.enqueue(new Callback<Item>() {
                     @Override
                     public void onResponse(Call<Item> call, Response<Item> response) {
