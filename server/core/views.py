@@ -1,14 +1,19 @@
-from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework import viewsets
-from .serializers import ItemSerializer
-from .models import Item
+from django.views.decorators.csrf import csrf_exempt
+from .models import ItemCollection
+import json
+
+item_collection = ItemCollection()
 
 
-class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+@csrf_exempt
+def main(request):
+    if request.method == 'GET':
+        item = item_collection.get(int(request.GET['id']))
+        return HttpResponse(item, status=200)
 
-
-# def main(request):
-#     return HttpResponse('hello world')
+    elif request.method == 'POST':
+        item_dict = json.loads(request.body)
+        print(item_dict)
+        item_collection.insert(item_dict)
+        return HttpResponse('posted', status=201)
